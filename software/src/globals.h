@@ -8,9 +8,11 @@
 #define UPDATE_INTERVAL 5000    // ms
 
 #define CT_RATIO        (40/5)  // calculated current transformer ratio (e.g. 40:5 -> 8)
-#define MODUBS_SERIAL   Serial2
+#define MODUBS_SERIAL   Serial3
 #define MODBUS_BAUD     38400
 #define MODBUS_ADDR     1
+
+
 
 #define SPI2_MOSI   PB15
 #define SPI2_MISO   PB14
