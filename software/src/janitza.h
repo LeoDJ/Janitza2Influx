@@ -85,16 +85,16 @@ const char *phaseTagStr[] = {
 
 
 
-
-
-
+#define REG_SERIAL  911
+#define REG_CT_PRIM 600
+#define REG_CT_SEC  601
 
 
 #define EMPTY {0, 1, false, INT, P_ALL, NULL}
 #define LONG_SPACER EMPTY
 
-
 // TODO: fix addresses (currently not needed)
+// array is aligned with line numbers for easier referencing
 registerDefinition_t registerDefinition[] = {
     //addr  multipl CTratio type    phase   name
     { 200,  10,     false,  INT,    P_L1,   "U_LN"          },
@@ -142,30 +142,30 @@ registerDefinition_t registerDefinition[] = {
     {   1,  10,     false,  INT,    P_L3,   "U_LN_Harm11"   },
     {   1,  10,     false,  INT,    P_L3,   "U_LN_Harm13"   },
     {   1,  10,     false,  INT,    P_L3,   "U_LN_Harm15"   },
-    {   1,  1,      false,  INT,    P_L1,   "I_Harm1"       },
-    {   1,  1,      false,  INT,    P_L1,   "I_Harm3"       },
-    {   1,  1,      false,  INT,    P_L1,   "I_Harm5"       },
-    {   1,  1,      false,  INT,    P_L1,   "I_Harm7"       },
-    {   1,  1,      false,  INT,    P_L1,   "I_Harm9"       },
-    {   1,  1,      false,  INT,    P_L1,   "I_Harm11"      },
-    {   1,  1,      false,  INT,    P_L1,   "I_Harm13"      },
-    {   1,  1,      false,  INT,    P_L1,   "I_Harm15"      },
-    {   1,  1,      false,  INT,    P_L2,   "I_Harm1"       },
-    {   1,  1,      false,  INT,    P_L2,   "I_Harm3"       },
-    {   1,  1,      false,  INT,    P_L2,   "I_Harm5"       },
-    {   1,  1,      false,  INT,    P_L2,   "I_Harm7"       },
-    {   1,  1,      false,  INT,    P_L2,   "I_Harm9"       },
-    {   1,  1,      false,  INT,    P_L2,   "I_Harm11"      },
-    {   1,  1,      false,  INT,    P_L2,   "I_Harm13"      },
-    {   1,  1,      false,  INT,    P_L2,   "I_Harm15"      },
-    {   1,  1,      false,  INT,    P_L3,   "I_Harm1"       },
-    {   1,  1,      false,  INT,    P_L3,   "I_Harm3"       },
-    {   1,  1,      false,  INT,    P_L3,   "I_Harm5"       },
-    {   1,  1,      false,  INT,    P_L3,   "I_Harm7"       },
-    {   1,  1,      false,  INT,    P_L3,   "I_Harm9"       },
-    {   1,  1,      false,  INT,    P_L3,   "I_Harm11"      },
-    {   1,  1,      false,  INT,    P_L3,   "I_Harm13"      },
-    {   1,  1,      false,  INT,    P_L3,   "I_Harm15"      },
+    {   1,  1,      true,   INT,    P_L1,   "I_Harm1"       },
+    {   1,  1,      true,   INT,    P_L1,   "I_Harm3"       },
+    {   1,  1,      true,   INT,    P_L1,   "I_Harm5"       },
+    {   1,  1,      true,   INT,    P_L1,   "I_Harm7"       },
+    {   1,  1,      true,   INT,    P_L1,   "I_Harm9"       },
+    {   1,  1,      true,   INT,    P_L1,   "I_Harm11"      },
+    {   1,  1,      true,   INT,    P_L1,   "I_Harm13"      },
+    {   1,  1,      true,   INT,    P_L1,   "I_Harm15"      },
+    {   1,  1,      true,   INT,    P_L2,   "I_Harm1"       },
+    {   1,  1,      true,   INT,    P_L2,   "I_Harm3"       },
+    {   1,  1,      true,   INT,    P_L2,   "I_Harm5"       },
+    {   1,  1,      true,   INT,    P_L2,   "I_Harm7"       },
+    {   1,  1,      true,   INT,    P_L2,   "I_Harm9"       },
+    {   1,  1,      true,   INT,    P_L2,   "I_Harm11"      },
+    {   1,  1,      true,   INT,    P_L2,   "I_Harm13"      },
+    {   1,  1,      true,   INT,    P_L2,   "I_Harm15"      },
+    {   1,  1,      true,   INT,    P_L3,   "I_Harm1"       },
+    {   1,  1,      true,   INT,    P_L3,   "I_Harm3"       },
+    {   1,  1,      true,   INT,    P_L3,   "I_Harm5"       },
+    {   1,  1,      true,   INT,    P_L3,   "I_Harm7"       },
+    {   1,  1,      true,   INT,    P_L3,   "I_Harm9"       },
+    {   1,  1,      true,   INT,    P_L3,   "I_Harm11"      },
+    {   1,  1,      true,   INT,    P_L3,   "I_Harm13"      },
+    {   1,  1,      true,   INT,    P_L3,   "I_Harm15"      },
     {   1,  10,     false,  INT,    P_L1,   "THD_U"         },
     {   1,  10,     false,  INT,    P_L2,   "THD_U"         },
     {   1,  10,     false,  INT,    P_L3,   "THD_U"         },
@@ -176,9 +176,9 @@ registerDefinition_t registerDefinition[] = {
     {   1,  100,    false,  INT,    P_ALL,  "CosPhi"        },
     {   1,  1,      false,  INT,    P_ALL,  "Rotation"      },
     {   1,  1,      false,  INT,    P_ALL,  "I_N"           },
-    {   1,  1,      false,  INT,    P_ALL,  "P"             },
-    {   1,  1,      false,  INT,    P_ALL,  "Q"             },
-    {   1,  1,      false,  INT,    P_ALL,  "S"             },
+    {   1,  1,      true,   INT,    P_ALL,  "P"             },
+    {   1,  1,      true,   INT,    P_ALL,  "Q"             },
+    {   1,  1,      true,   INT,    P_ALL,  "S"             },
     EMPTY, // {   0,  1,      true,   INT,    P_L1,   "I_Mean"        },
     EMPTY, // {   0,  1,      true,   INT,    P_L2,   "I_Mean"        },
     EMPTY, // {   0,  1,      true,   INT,    P_L3,   "I_Mean"        },
@@ -313,19 +313,16 @@ registerDefinition_t registerDefinition[] = {
     EMPTY,
     EMPTY,
     EMPTY,
-    {   1,  1,      false,  LONG,  P_ALL,  "Wp"             }, // Wh
+    {   1,  1,      true,   LONG,  P_ALL,  "Wp"             }, // Wh
     LONG_SPACER,
-    {   1,  1,      false,  LONG,  P_ALL,  "Wq"             },
+    {   1,  1,      true,   LONG,  P_ALL,  "Wq"             },
     LONG_SPACER,
     EMPTY,
     EMPTY,
-    {   1,  1,      false,  LONG,  P_ALL,  "Wp_Import"      }, // Wh
+    {   1,  1,      true,   LONG,  P_ALL,  "Wp_Import"      }, // Wh
     LONG_SPACER,
-    {   1,  1,      false,  LONG,  P_ALL,  "Wp_Supply"      }, // Wh
+    {   1,  1,      true,   LONG,  P_ALL,  "Wp_Supply"      }, // Wh
     LONG_SPACER,
 };
 #define REG_DEF_NUM   (sizeof(registerDefinition) / sizeof(registerDefinition[0]))
 #define REG_DEF_START_ADDR  200
-
-
-#define REG_SERIAL  911

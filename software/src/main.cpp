@@ -7,22 +7,29 @@
 #include "eth.h"
 
 
-
 ModbusMaster mb;
 uint32_t _serialNumber;
+uint16_t _ctRatio = 1;
 EthernetClient client;
+
 
 void handleHttpResponse() {
     // print response from HTTP request
     if (client.available()) {
         int len = client.available();
-        uint8_t buf[256];
-        if (len > 256) {
-            len = 256;
+        uint8_t buf[512];
+        if (len > 512) {
+            len = 512;
         }
         client.read(buf, len);
 
-        DEBUG.write(buf, len);
+        if (strncmp((const char *)buf, "HTTP/1.1 204", 12) == 0) {
+            DEBUG.println("InfluxDB request successful.");
+        }
+        else {
+            DEBUG.println("InfluxDB request failed!");
+            DEBUG.write(buf, len);
+        }
     }
 }
 
@@ -51,10 +58,20 @@ void sendInfluxRequest(char *lineProtocolCommand) {
 uint32_t readSerialNumber() {
     uint8_t ret = mb.readHoldingRegisters(REG_SERIAL, 2);
     if (ret != mb.ku8MBSuccess) {
-        DEBUG.printf("Error reading from ModBus. Status = %02X\n", ret);
+        DEBUG.printf("Error reading from ModBus in readSerialNumber. Status = %02X\n", ret);
         return 0;
     }
     return mb.getResponseBuffer(0) << 16 | mb.getResponseBuffer(1);
+}
+
+uint16_t readCtRatio() {
+    uint8_t ret = mb.readHoldingRegisters(REG_CT_PRIM, 2);
+    if (ret != mb.ku8MBSuccess) {
+        DEBUG.printf("Error reading from ModBus in readCtRatio. Status = %02X\n", ret);
+        return 0;
+    }
+    // calculate CT ratio, only integers supported currently
+    return mb.getResponseBuffer(0) / mb.getResponseBuffer(1);
 }
 
 registerDefinition_t *getRegDef(uint16_t address) {
@@ -67,7 +84,7 @@ registerDefinition_t *getRegDef(uint16_t address) {
     }
 }
 
-#define MB_CHUNK_SIZE   64
+#define MB_CHUNK_SIZE   32
 
 bool modbusReadBulk(int16_t *destBuf, uint16_t startAddr, uint16_t count) {
     int iterations = (count + (MB_CHUNK_SIZE - 1)) / MB_CHUNK_SIZE; // division, but rounded up
@@ -78,12 +95,12 @@ bool modbusReadBulk(int16_t *destBuf, uint16_t startAddr, uint16_t count) {
             mbCount = count % MB_CHUNK_SIZE;
         }
 
-        DEBUG.printf("Reading Modbus Addr: %d, Count: %d\n", mbStart, mbCount);
+        DEBUG.printf("Reading Modbus %d/%d (Addr: %d, Count: %d)         \r", i+1, iterations, mbStart, mbCount);
 
         uint8_t ret = mb.readHoldingRegisters(mbStart, mbCount);
 
         if (ret != mb.ku8MBSuccess) {
-            DEBUG.printf("Error reading from ModBus. Status = %02X\n", ret);
+            DEBUG.printf("\nError reading from ModBus. Status = %02X\n", ret);
             return false;
         }
 
@@ -91,14 +108,15 @@ bool modbusReadBulk(int16_t *destBuf, uint16_t startAddr, uint16_t count) {
             destBuf[i * MB_CHUNK_SIZE + j] = mb.getResponseBuffer(j);
         }
     }
+    DEBUG.printf("\n");
     return true;
 
 }
 
 int16_t modbusBuf[REG_DEF_NUM];
+char influxQueryBuf[512*10];
 
 void readMeter() {
-    // readMeterChunk(200, 64);
     bool success = modbusReadBulk(modbusBuf, 200, 226);
 
     if (!success) {
@@ -106,12 +124,11 @@ void readMeter() {
         return;
     }
 
-    char influxQueryBuf[512];
+    int influxQueryLen = 0;
 
     for (int phase = 0; phase < P_TAG_NUM; phase++) {
         const char* phaseStr = phaseTagStr[phase];
 
-        int influxQueryLen = 0;
         influxQueryLen += sprintf(influxQueryBuf + influxQueryLen, "%s", INFLUX_MEASUREMENT); // measurement name
         influxQueryLen += sprintf(influxQueryBuf + influxQueryLen, ",serial=%d,phase=%s ", _serialNumber, phaseStr); // print tags here
     
@@ -134,21 +151,18 @@ void readMeter() {
 
                 // apply current transformer ratio if needed
                 if (regDef->applyCtRatio) {
-                    val *= (float)CT_RATIO;
+                    val *= (float)_ctRatio;
                 }
 
                 influxQueryLen += sprintf(influxQueryBuf + influxQueryLen, "%s=%g,", regDef->influxStr, val);
             }
         }
 
-        influxQueryBuf[influxQueryLen - 1] = 0; // clear trailing comma
-
-        DEBUG.write(influxQueryBuf);
-        DEBUG.println();
-        
-        sendInfluxRequest(influxQueryBuf);
-        handleHttpResponse();
+        influxQueryBuf[influxQueryLen - 1] = '\n'; // replace trailing comma with newline
     }
+    // DEBUG.write(influxQueryBuf);
+    DEBUG.print("Sending InfluxDB Request... ");
+    sendInfluxRequest(influxQueryBuf);
 
 }
 
@@ -159,9 +173,19 @@ void setup() {
     MODUBS_SERIAL.begin(MODBUS_BAUD);
     mb.begin(MODBUS_ADDR, MODUBS_SERIAL);
 
-    _serialNumber = readSerialNumber();
-    DEBUG.printf("Serial: %d\n", _serialNumber);
-    // readMeter();
+    while (_serialNumber == 0) {
+        _serialNumber = readSerialNumber();
+        if (_serialNumber != 0) {
+            DEBUG.printf("Serial: %d\n", _serialNumber);
+        }
+        else {
+            DEBUG.printf("Error: Could not read serial number, make sure the meter is connected and address and baud rate are correct. Retrying in 5s...\n");
+            delay(5000);
+        }
+    }
+
+    _ctRatio = readCtRatio();
+    DEBUG.printf("CT Ratio: %d\n", _ctRatio);
 
     initEthernet();
     connectEthernet();
@@ -177,4 +201,5 @@ void loop() {
         readMeter();
     }
    
+    handleHttpResponse();
 }
