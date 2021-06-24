@@ -8,7 +8,7 @@
 #define UPDATE_INTERVAL 5000    // ms
 
 #define MODUBS_SERIAL   Serial3
-#define MODBUS_DE_PIN   PA4
+#define MODBUS_DE_PIN   PB1
 #define MODBUS_BAUD     115200
 #define MODBUS_ADDR     1
 

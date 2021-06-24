@@ -62,11 +62,14 @@ void sendInfluxRequest(char *lineProtocolCommand) {
 
 void setup() {
     Serial.begin(115200);
+    Serial.println("\nJanitza UMG96RM Power Analyzer to Influx\n");
     MODUBS_SERIAL.begin(MODBUS_BAUD);
     janitza.setDebugSerial(Serial);
     janitza.useRS485(MODBUS_DE_PIN, preTransmission, postTransmission);
     janitza.setInfluxSendCallback(sendInfluxRequest, INFLUX_MEASUREMENT);
-    janitza.init(MODUBS_SERIAL, MODBUS_ADDR, regDef_UMG96RM, sizeof(regDef_UMG96RM));
+    janitza.init(MODUBS_SERIAL, MODBUS_ADDR, regDef_UMG96RM, sizeof(regDef_UMG96RM));  //blocks until modbus connected
+
+    // janitza.read();
 
     initEthernet();
     connectEthernet();

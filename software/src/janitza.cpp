@@ -4,6 +4,7 @@
 #define _debugPrintf if(_debug) _debug->printf
 #define MB_CHUNK_SIZE   32  // number of addresses to read at once
 #define REG_DEF_START   3   // skip over serial number and CT_ratio register defs
+#define FLOAT_CUTOFF    0.000001f    // send values under this cutoff as o
 
 void Janitza::init(Stream &serialPort, uint16_t modbusAddress, registerDefinition_t *registerDef, size_t regDefSize) {
     _serial = &serialPort;
@@ -41,7 +42,9 @@ bool Janitza::read() {
     do {
         uint16_t regDefIndexLastContig = getContiguousRegisters(regDefIndex);
         uint16_t startAddr = _regDef[regDefIndex].address;
-        uint16_t regCount = startAddr - (_regDef[regDefIndexLastContig].address + registerDataTypeSize[_regDef[regDefIndexLastContig].type]);
+        uint16_t regCount = (_regDef[regDefIndexLastContig].address + registerDataTypeSize[_regDef[regDefIndexLastContig].type]) - startAddr;
+
+        _debugPrintf("Start: %d (%d), Count: %d (%d)\n", regDefIndexLastContig, startAddr, regCount, _regDef[regDefIndexLastContig].address);
 
         bool success = modbusReadBulk((int16_t *)(_mbBuf + mbBufIdx), startAddr, regCount);
         if (!success) {
@@ -87,14 +90,14 @@ void Janitza::generateInfluxCommands() {
                         mbValue = (uint16_t)_mbBuf[mbBufIdx];
                         break;
                     case registerDataTypes::INT:
-                        // mbValue = mbValue << 16 | (_mbBuf[mbBufIdx + 1] & 0xFFFF);
                         mbValue = _mbBuf[mbBufIdx] << 16 | (_mbBuf[mbBufIdx + 1] & 0xFFFF);
-                        i++;    // increment counter / skip next address
                         break;
                     case registerDataTypes::FLOAT:
-                        // TODO: check endianness
-                        memcpy(&mbValue, &_mbBuf[mbBufIdx], 2);
-                        memcpy(((uint8_t *)&mbValue) + 2, &_mbBuf[mbBufIdx + 1], 2);
+                        memcpy(&mbValue, &_mbBuf[mbBufIdx + 1], 2);
+                        memcpy(((uint8_t *)&mbValue) + 2, &_mbBuf[mbBufIdx], 2);
+                        if (fabsf(mbValue) < FLOAT_CUTOFF) {
+                            mbValue = 0;
+                        }
                         break;
                     default: 
                         _debugPrintf("Error: Current register type not implemented yet! addr = %d, type = %d\n", regDef->address, regDef->type);
@@ -110,8 +113,8 @@ void Janitza::generateInfluxCommands() {
 
                 influxQueryLen += sprintf(_influxQueryBuf + influxQueryLen, "%s=%g,", regDef->influxStr, val);
 
-                mbBufIdx += registerDataTypeSize[regDef->type] / 2; // increment modbus buffer index by type size
             }
+            mbBufIdx += registerDataTypeSize[regDef->type] / 2; // increment modbus buffer index by type size
         }
 
         _influxQueryBuf[influxQueryLen - 1] = '\n'; // replace trailing comma with newline
