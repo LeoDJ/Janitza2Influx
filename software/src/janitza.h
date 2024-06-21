@@ -68,7 +68,7 @@ class Janitza {
         
         void setDebugSerial(Stream &serialPort);
         void setInfluxSendCallback(void (*influxSendRequest)(char *lineProtocolCommand), const char *measurementName);
-        void useRS485(uint32_t deRePin, void (*preTransmission)(), void (*postTransmission)());         // supply pin for RS485 transceiver direction (DE / RE)
+        void useRS485(uint32_t dePin, uint32_t rePin, void (*preTransmission)(), void (*postTransmission)());         // supply pin for RS485 transceiver direction (DE / RE)
         uint32_t readSerialNumber();
         bool read();
         void generateInfluxCommands();
@@ -85,7 +85,8 @@ class Janitza {
 
         Stream *_debug = nullptr;       // Debug serial port
         Stream *_serial;                // Serial port pointer for Modbus
-        uint32_t _rs485deRePin;         // Pin for RS485 transceiver direction (DE / RE)
+        uint32_t _rs485DePin;           // DE Pin for RS485 transceiver direction
+        uint32_t _rs485RePin;           // RE Pin for RS485 transceiver direction
         uint16_t _mbAddr;               // Modbus address
         ModbusMaster _mb;
         uint16_t *_mbBuf;

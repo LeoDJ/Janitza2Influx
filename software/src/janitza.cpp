@@ -155,11 +155,14 @@ void Janitza::setInfluxSendCallback(void (*influxSendRequest)(char *lineProtocol
     _influxMeasurement = measurementName;
 }
 
-void Janitza::useRS485(uint32_t deRePin, void (*preTransmission)(), void (*postTransmission)()) {
-    _rs485deRePin = deRePin;
+void Janitza::useRS485(uint32_t dePin, uint32_t rePin, void (*preTransmission)(), void (*postTransmission)()) {
+    _rs485DePin = dePin;
+    _rs485RePin = rePin;
 
-    pinMode(_rs485deRePin, OUTPUT);
-    digitalWrite(_rs485deRePin, 0);
+    pinMode(_rs485DePin, OUTPUT);
+    pinMode(_rs485RePin, OUTPUT);
+    digitalWrite(_rs485DePin, 0);
+    digitalWrite(_rs485RePin, 0);
 
 
     // need to pass functions from external, because apparently I can't easily generate a function inside this class
@@ -171,11 +174,13 @@ void Janitza::useRS485(uint32_t deRePin, void (*preTransmission)(), void (*postT
 
 
 void Janitza::rs485Transmit() {
-    digitalWrite(_rs485deRePin, 1);
+    digitalWrite(_rs485DePin, 1);
+    digitalWrite(_rs485RePin, 1);
 }
 
 void Janitza::rs485Receive() {
-    digitalWrite(_rs485deRePin, 0);
+    digitalWrite(_rs485DePin, 0);
+    digitalWrite(_rs485RePin, 0);
 }
 
 void Janitza::setDebugSerial(Stream &serialPort) {

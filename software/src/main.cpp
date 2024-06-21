@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <Ethernet.h>
 
 #include "globals.h"
 #include "janitza.h"
@@ -29,11 +28,11 @@ void handleHttpResponse() {
         client.read(buf, len);
 
         if (strncmp((const char *)buf, "HTTP/1.1 204", 12) == 0) {
-            DEBUG.println("InfluxDB request successful.");
+            DBG.println("InfluxDB request successful.");
         }
         else {
-            DEBUG.println("InfluxDB request failed!");
-            DEBUG.write(buf, len);
+            DBG.println("InfluxDB request failed!");
+            DBG.write(buf, len);
         }
     }
 }
@@ -41,7 +40,7 @@ void handleHttpResponse() {
 void sendInfluxRequest(char *lineProtocolCommand) {
     if (!client.connected()) {
         if (!client.connect(INFLUX_HOST, INFLUX_PORT)) {
-            DEBUG.printf("Connection to InfluxDB failed\n");
+            DBG.printf("Connection to InfluxDB failed\n");
             return;
         }
     }
@@ -61,11 +60,12 @@ void sendInfluxRequest(char *lineProtocolCommand) {
 }
 
 void setup() {
-    Serial.begin(115200);
-    Serial.println("\nJanitza UMG96RM Power Analyzer to Influx\n");
+
+    DBG.begin(115200);
+    DBG.println("\nJanitza UMG96RM Power Analyzer to Influx\n");
     MODUBS_SERIAL.begin(MODBUS_BAUD);
-    janitza.setDebugSerial(Serial);
-    janitza.useRS485(MODBUS_DE_PIN, preTransmission, postTransmission);
+    janitza.setDebugSerial(DBG);
+    janitza.useRS485(MODBUS_DE_PIN, MODBUS_RE_PIN, preTransmission, postTransmission);
     janitza.setInfluxSendCallback(sendInfluxRequest, INFLUX_MEASUREMENT);
     janitza.init(MODUBS_SERIAL, MODBUS_ADDR, regDef_UMG96RM, sizeof(regDef_UMG96RM));  //blocks until modbus connected
 
