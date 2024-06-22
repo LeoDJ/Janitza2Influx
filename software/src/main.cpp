@@ -78,7 +78,7 @@ void setup() {
 uint32_t lastUpdate = 0;
 
 void loop () {
-        if (millis() - lastUpdate >= UPDATE_INTERVAL) {
+    if (millis() - lastUpdate >= UPDATE_INTERVAL) {
         lastUpdate = millis();
         janitza.readAndSendToInflux();
     }

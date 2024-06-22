@@ -5,6 +5,8 @@ registerDefinition_t regDef_UMG96RM[] = {
     { 754,      1,      false,  Janitza::INT,   Janitza::P_ALL,     "SN"            },  // index 0 has to be serial number
     { 10,       1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "CT_prim"       },  // index 1 has to be CT primary
     { 12,       1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "CT_sec"        },  // index 2 has to be CT secondary
+
+
     { 19000,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN"          },
     { 19002,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN"          },
     { 19004,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN"          },
@@ -66,6 +68,11 @@ registerDefinition_t regDef_UMG96RM[] = {
     { 19116,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "THD_I"         },
     { 19118,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "THD_I"         },
     { 19120,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "THD_I"         },
+    
+    {  5896,    1,      false,  Janitza::INT,   Janitza::P_ALL,     "OperatingTime" },  // seconds
+
+    // {  1000,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm1"    },   // TODO
+
 
 
 };

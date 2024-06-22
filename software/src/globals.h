@@ -13,10 +13,15 @@
     #define MODBUS_RE_PIN   MODBUS_DE_PIN
 #endif
 #ifdef ARDUINO_ARCH_CH32V
-    #define MODUBS_SERIAL   Serial2
+    // #define MODUBS_SERIAL   Serial1  // RS485 1
+    // #define MODBUS_DE_PIN   PA8
+    // #define MODBUS_RE_PIN   PA15
+    // #define MODUBS_SERIAL   Serial2  // RS485 2
+    // #define MODBUS_DE_PIN   PB2
+    // #define MODBUS_RE_PIN   PD5
+    #define MODUBS_SERIAL   Serial3 // RS485 0
     #define MODBUS_DE_PIN   PB2
     #define MODBUS_RE_PIN   PD5
-    
 #endif
 
 #define MODBUS_BAUD     115200

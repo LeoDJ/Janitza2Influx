@@ -142,7 +142,7 @@ uint16_t Janitza::getContiguousRegisters(uint16_t startIndex) {
         registerDefinition_t def = _regDef[i];
         uint16_t nextAddr = def.address + (registerDataTypeSize[def.type] / 2);
         if (_regDef[i + 1].address != nextAddr) {
-            return i + 1;
+            return i;
         }
     }
 

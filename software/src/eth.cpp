@@ -69,7 +69,9 @@ void initEthernet() {
 }
 #endif
 #ifdef ARDUINO_ARCH_CH32V
-void initEthernet() {}      // nothing to init
+void initEthernet() {
+    Ethernet.setLedPins(PB0, PB1, true);
+}  
 uint8_t *macAddr = nullptr; // Ethernet uses internal MAC, if parameter is nullptr
 #endif
 
