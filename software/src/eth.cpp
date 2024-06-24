@@ -1,7 +1,8 @@
 #include "eth.h"
 
 #ifdef ARDUINO_ARCH_STM32
-uint8_t macAddr[6];
+uint8_t macAddrArr[6];
+uint8_t *macAddr = macAddrArr;
 char macStr[13];
 // EthernetClient net;
 
