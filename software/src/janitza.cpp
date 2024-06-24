@@ -8,8 +8,7 @@
 #define REG_DEF_START 3        // skip over serial number and CT_ratio register defs
 #define FLOAT_CUTOFF 0.000001f // send values under this cutoff as o
 
-void Janitza::init(Stream &serialPort, uint16_t modbusAddress, registerDefinition_t *registerDef, size_t regDefSize)
-{
+void Janitza::init(Stream& serialPort, uint16_t modbusAddress, registerDefinition_t* registerDef, size_t regDefSize) {
     _serial = &serialPort;
     _mbAddr = modbusAddress;
     _regDef = registerDef;
@@ -17,29 +16,25 @@ void Janitza::init(Stream &serialPort, uint16_t modbusAddress, registerDefinitio
 
     _mb.begin(_mbAddr, *_serial);
 
-    while (_serialNumber == 0)
-    {
+    while (_serialNumber == 0) {
         _serialNumber = readSerialNumber();
-        if (_serialNumber != 0)
-        {
+        if (_serialNumber != 0) {
             _debugPrintf("Serial: %d\n", _serialNumber);
         }
-        else
-        {
-            _debugPrintf("Error: Could not read serial number, make sure the meter is connected and address and baud rate are correct. Retrying in 5s...\n");
+        else {
+            _debugPrintf(
+                "Error: Could not read serial number, make sure the meter is connected and address and baud rate are correct. Retrying in 5s...\n");
             delay(5000);
         }
     }
 
-    _mbBuf = (uint16_t *)malloc(getRequiredModbusBufferSize(REG_DEF_START, _regDefLen - 1));
-    if (_mbBuf == NULL)
-    {
+    _mbBuf = (uint16_t*)malloc(getRequiredModbusBufferSize(REG_DEF_START, _regDefLen - 1));
+    if (_mbBuf == NULL) {
         _debugPrintf("Error: Not enough memory available to allocate Modbus buffer!\n");
     }
 }
 
-bool Janitza::read()
-{
+bool Janitza::read() {
     // get contiguous register areas
     // do reads
     // generate influx queries on request and call callback
@@ -47,17 +42,18 @@ bool Janitza::read()
     uint16_t regDefIndex = REG_DEF_START;
     uint16_t mbBufIdx = 0;
 
-    do
-    {
+    do {
         uint16_t regDefIndexLastContig = getContiguousRegisters(regDefIndex);
         uint16_t startAddr = _regDef[regDefIndex].address;
-        uint16_t regCount = (_regDef[regDefIndexLastContig].address + registerDataTypeSize[_regDef[regDefIndexLastContig].type]) - startAddr;
+        uint16_t regCount =
+            (_regDef[regDefIndexLastContig].address + registerDataTypeSize[_regDef[regDefIndexLastContig].type]) -
+            startAddr;
 
-        _debugPrintf("Start: %d (%d), Count: %d (%d)\n", regDefIndexLastContig, startAddr, regCount, _regDef[regDefIndexLastContig].address);
+        _debugPrintf("Start: %d (%d), Count: %d (%d)\n", regDefIndexLastContig, startAddr, regCount,
+                     _regDef[regDefIndexLastContig].address);
 
-        bool success = modbusReadBulk((int16_t *)(_mbBuf + mbBufIdx), startAddr, regCount);
-        if (!success)
-        {
+        bool success = modbusReadBulk((int16_t*)(_mbBuf + mbBufIdx), startAddr, regCount);
+        if (!success) {
             _debugPrintf("Error reading bulk from ModBus\n");
             return false;
         }
@@ -70,59 +66,54 @@ bool Janitza::read()
     return true;
 }
 
-void Janitza::generateInfluxCommands()
-{
+void Janitza::generateInfluxCommands() {
     int influxQueryLen = 0;
 
-    for (int phase = 0; phase < P_TAG_NUM; phase++)
-    {
-        const char *phaseStr = phaseTagStr[phase];
+    for (int phase = 0; phase < P_TAG_NUM; phase++) {
+        const char* phaseStr = phaseTagStr[phase];
         uint16_t mbBufIdx = 0;
 
-        influxQueryLen += sprintf(_influxQueryBuf + influxQueryLen, "%s", _influxMeasurement);                        // measurement name
-        influxQueryLen += sprintf(_influxQueryBuf + influxQueryLen, ",serial=%d,phase=%s ", _serialNumber, phaseStr); // print tags here
+        influxQueryLen += sprintf(_influxQueryBuf + influxQueryLen, "%s", _influxMeasurement); // measurement name
+        influxQueryLen += sprintf(_influxQueryBuf + influxQueryLen, ",serial=%d,phase=%s ", _serialNumber,
+                                  phaseStr); // print tags here
 
-        for (int i = REG_DEF_START; i < _regDefLen; i++)
-        {
-            registerDefinition_t *regDef = &_regDef[i];
+        for (int i = REG_DEF_START; i < _regDefLen; i++) {
+            registerDefinition_t* regDef = &_regDef[i];
 
             // if (regDef->address == 0) { // skip "disabled" addresses
             //     continue;
             // }
 
-            if (regDef->phaseTag == phase)
-            {
+            if (regDef->phaseTag == phase) {
                 float mbValue;
-                switch (regDef->type)
-                {
-                // case registerDataTypes::BYTE:
-                case registerDataTypes::SHORT:
-                    mbValue = (int16_t)_mbBuf[mbBufIdx];
-                    break;
-                case registerDataTypes::CHAR:
-                    mbValue = (uint16_t)_mbBuf[mbBufIdx];
-                    break;
-                case registerDataTypes::INT:
-                    mbValue = _mbBuf[mbBufIdx] << 16 | (_mbBuf[mbBufIdx + 1] & 0xFFFF);
-                    break;
-                case registerDataTypes::FLOAT:
-                    memcpy(&mbValue, &_mbBuf[mbBufIdx + 1], 2);
-                    memcpy(((uint8_t *)&mbValue) + 2, &_mbBuf[mbBufIdx], 2);
-                    if (fabsf(mbValue) < FLOAT_CUTOFF)
-                    {
-                        mbValue = 0;
-                    }
-                    break;
-                default:
-                    _debugPrintf("Error: Current register type not implemented yet! addr = %d, type = %d\n", regDef->address, regDef->type);
-                    break;
+                switch (regDef->type) {
+                    // case registerDataTypes::BYTE:
+                    case registerDataTypes::SHORT:
+                        mbValue = (int16_t)_mbBuf[mbBufIdx];
+                        break;
+                    case registerDataTypes::CHAR:
+                        mbValue = (uint16_t)_mbBuf[mbBufIdx];
+                        break;
+                    case registerDataTypes::INT:
+                        mbValue = _mbBuf[mbBufIdx] << 16 | (_mbBuf[mbBufIdx + 1] & 0xFFFF);
+                        break;
+                    case registerDataTypes::FLOAT:
+                        memcpy(&mbValue, &_mbBuf[mbBufIdx + 1], 2);
+                        memcpy(((uint8_t*)&mbValue) + 2, &_mbBuf[mbBufIdx], 2);
+                        if (fabsf(mbValue) < FLOAT_CUTOFF) {
+                            mbValue = 0;
+                        }
+                        break;
+                    default:
+                        _debugPrintf("Error: Current register type not implemented yet! addr = %d, type = %d\n",
+                                     regDef->address, regDef->type);
+                        break;
                 }
 
                 float val = mbValue / (float)regDef->multiplier;
 
                 // apply current transformer ratio if needed
-                if (regDef->applyCtRatio)
-                {
+                if (regDef->applyCtRatio) {
                     val *= (float)_ctRatio;
                 }
 
@@ -138,22 +129,18 @@ void Janitza::generateInfluxCommands()
     _influxSendRequest(_influxQueryBuf);
 }
 
-void Janitza::readAndSendToInflux()
-{
+void Janitza::readAndSendToInflux() {
     bool success = read();
-    if (success)
-    {
+    if (success) {
         generateInfluxCommands();
     }
 }
 
-JsonDocument Janitza::generateJson()
-{
+JsonDocument Janitza::generateJson() {
     JsonDocument doc;
     JsonDocument doc2;
-    for (int i = REG_DEF_START; i < _regDefLen; i++)
-    {
-        registerDefinition_t *regDef = &_regDef[i];
+    for (int i = REG_DEF_START; i < _regDefLen; i++) {
+        registerDefinition_t* regDef = &_regDef[i];
         uint16_t mbBufIdx = 0;
 
         // if (regDef->address == 0) { // skip "disabled" addresses
@@ -161,46 +148,43 @@ JsonDocument Janitza::generateJson()
         // }
 
         float mbValue;
-        switch (regDef->type)
-        {
-        // case registerDataTypes::BYTE:
-        case registerDataTypes::SHORT:
-            mbValue = (int16_t)_mbBuf[mbBufIdx];
-            break;
-        case registerDataTypes::CHAR:
-            mbValue = (uint16_t)_mbBuf[mbBufIdx];
-            break;
-        case registerDataTypes::INT:
-            mbValue = _mbBuf[mbBufIdx] << 16 | (_mbBuf[mbBufIdx + 1] & 0xFFFF);
-            break;
-        case registerDataTypes::FLOAT:
-            memcpy(&mbValue, &_mbBuf[mbBufIdx + 1], 2);
-            memcpy(((uint8_t *)&mbValue) + 2, &_mbBuf[mbBufIdx], 2);
-            if (fabsf(mbValue) < FLOAT_CUTOFF)
-            {
-                mbValue = 0;
-            }
-            break;
-        default:
-            _debugPrintf("Error: Current register type not implemented yet! addr = %d, type = %d\n", regDef->address, regDef->type);
-            break;
+        switch (regDef->type) {
+            // case registerDataTypes::BYTE:
+            case registerDataTypes::SHORT:
+                mbValue = (int16_t)_mbBuf[mbBufIdx];
+                break;
+            case registerDataTypes::CHAR:
+                mbValue = (uint16_t)_mbBuf[mbBufIdx];
+                break;
+            case registerDataTypes::INT:
+                mbValue = _mbBuf[mbBufIdx] << 16 | (_mbBuf[mbBufIdx + 1] & 0xFFFF);
+                break;
+            case registerDataTypes::FLOAT:
+                memcpy(&mbValue, &_mbBuf[mbBufIdx + 1], 2);
+                memcpy(((uint8_t*)&mbValue) + 2, &_mbBuf[mbBufIdx], 2);
+                if (fabsf(mbValue) < FLOAT_CUTOFF) {
+                    mbValue = 0;
+                }
+                break;
+            default:
+                _debugPrintf("Error: Current register type not implemented yet! addr = %d, type = %d\n",
+                             regDef->address, regDef->type);
+                break;
         }
         mbBufIdx += registerDataTypeSize[regDef->type] / 2; // increment modbus buffer index by type size
 
         float val = mbValue / (float)regDef->multiplier;
 
         // apply current transformer ratio if needed
-        if (regDef->applyCtRatio)
-        {
+        if (regDef->applyCtRatio) {
             val *= (float)_ctRatio;
         }
-        
+
         JsonObject nested = doc.createNestedObject(_regDef[i].influxSt3r);
-        for (size_t i = 0; i < count; i++)
-        {
+        for (size_t i = 0; i < count; i++) {
             /* code */
         }
-        
+
         nested[(String)_regDef[i].phaseTag] = val;
     }
 
@@ -208,19 +192,15 @@ JsonDocument Janitza::generateJson()
 }
 
 // returns last index of contiguous register definition area (for bulk modbus reading)
-uint16_t Janitza::getContiguousRegisters(uint16_t startIndex)
-{
-    if (startIndex >= _regDefLen - 1)
-    { // if at or over last element, return that
+uint16_t Janitza::getContiguousRegisters(uint16_t startIndex) {
+    if (startIndex >= _regDefLen - 1) { // if at or over last element, return that
         return _regDefLen - 1;
     }
 
-    for (int i = startIndex; i < _regDefLen - 1; i++)
-    { // loop until second to last element
+    for (int i = startIndex; i < _regDefLen - 1; i++) { // loop until second to last element
         registerDefinition_t def = _regDef[i];
         uint16_t nextAddr = def.address + (registerDataTypeSize[def.type] / 2);
-        if (_regDef[i + 1].address != nextAddr)
-        {
+        if (_regDef[i + 1].address != nextAddr) {
             return i;
         }
     }
@@ -229,14 +209,12 @@ uint16_t Janitza::getContiguousRegisters(uint16_t startIndex)
     return _regDefLen - 1;
 }
 
-void Janitza::setInfluxSendCallback(void (*influxSendRequest)(char *lineProtocolCommand), const char *measurementName)
-{
+void Janitza::setInfluxSendCallback(void (*influxSendRequest)(char* lineProtocolCommand), const char* measurementName) {
     _influxSendRequest = influxSendRequest;
     _influxMeasurement = measurementName;
 }
 
-void Janitza::useRS485(uint32_t dePin, uint32_t rePin, void (*preTransmission)(), void (*postTransmission)())
-{
+void Janitza::useRS485(uint32_t dePin, uint32_t rePin, void (*preTransmission)(), void (*postTransmission)()) {
     _rs485DePin = dePin;
     _rs485RePin = rePin;
 
@@ -252,54 +230,44 @@ void Janitza::useRS485(uint32_t dePin, uint32_t rePin, void (*preTransmission)()
     _mb.postTransmission(postTransmission);
 }
 
-void Janitza::rs485Transmit()
-{
+void Janitza::rs485Transmit() {
     digitalWrite(_rs485DePin, 1);
     digitalWrite(_rs485RePin, 1);
 }
 
-void Janitza::rs485Receive()
-{
+void Janitza::rs485Receive() {
     digitalWrite(_rs485DePin, 0);
     digitalWrite(_rs485RePin, 0);
 }
 
-void Janitza::setDebugSerial(Stream &serialPort)
-{
+void Janitza::setDebugSerial(Stream& serialPort) {
     _debug = &serialPort;
 }
 
-uint16_t Janitza::getRequiredModbusBufferSize(uint16_t regStart, uint16_t regEnd)
-{
+uint16_t Janitza::getRequiredModbusBufferSize(uint16_t regStart, uint16_t regEnd) {
     uint16_t requiredSize = 0;
-    for (int i = regStart; i <= regEnd; i++)
-    {
+    for (int i = regStart; i <= regEnd; i++) {
         uint8_t typeSize = registerDataTypeSize[_regDef[i].type];
         requiredSize += typeSize;
     }
     return requiredSize;
 }
 
-uint32_t Janitza::readSerialNumber()
-{
+uint32_t Janitza::readSerialNumber() {
     uint8_t ret = _mb.readHoldingRegisters(_regDef[0].address, 2);
-    if (ret != _mb.ku8MBSuccess)
-    {
+    if (ret != _mb.ku8MBSuccess) {
         _debugPrintf("Error reading from ModBus in readSerialNumber. Status = %02X\n", ret);
         return 0;
     }
     return _mb.getResponseBuffer(0) << 16 | _mb.getResponseBuffer(1);
 }
 
-bool Janitza::modbusReadBulk(int16_t *destBuf, uint16_t startAddr, uint16_t count)
-{
+bool Janitza::modbusReadBulk(int16_t* destBuf, uint16_t startAddr, uint16_t count) {
     int iterations = (count + (MB_CHUNK_SIZE - 1)) / MB_CHUNK_SIZE; // division, but rounded up
-    for (int i = 0; i < iterations; i++)
-    {
+    for (int i = 0; i < iterations; i++) {
         uint16_t mbStart = startAddr + i * MB_CHUNK_SIZE;
         uint8_t mbCount = MB_CHUNK_SIZE;
-        if (MB_CHUNK_SIZE * (i + 1) > count)
-        {
+        if (MB_CHUNK_SIZE * (i + 1) > count) {
             mbCount = count % MB_CHUNK_SIZE;
         }
 
@@ -307,14 +275,12 @@ bool Janitza::modbusReadBulk(int16_t *destBuf, uint16_t startAddr, uint16_t coun
 
         uint8_t ret = _mb.readHoldingRegisters(mbStart, mbCount);
 
-        if (ret != _mb.ku8MBSuccess)
-        {
+        if (ret != _mb.ku8MBSuccess) {
             _debugPrintf("\nError reading from ModBus. Status = %02X\n", ret);
             return false;
         }
 
-        for (int j = 0; j < mbCount; j++)
-        {
+        for (int j = 0; j < mbCount; j++) {
             destBuf[i * MB_CHUNK_SIZE + j] = _mb.getResponseBuffer(j);
         }
     }
