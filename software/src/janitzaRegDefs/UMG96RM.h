@@ -2,9 +2,9 @@
 
 registerDefinition_t regDef_UMG96RM[] = {
     // addr     multipl CTratio type            phase               name
-    { 754,      1,      false,  Janitza::INT,   Janitza::P_ALL,     "SN"            },  // index 0 has to be serial number
-    { 10,       1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "CT_prim"       },  // index 1 has to be CT primary
-    { 12,       1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "CT_sec"        },  // index 2 has to be CT secondary
+    { 754,      1,      false,  Janitza::INT,   Janitza::P_NONE,     "SN"            },  // index 0 has to be serial number
+    { 10,       1,      false,  Janitza::FLOAT, Janitza::P_NONE,     "CT_prim"       },  // index 1 has to be CT primary
+    { 12,       1,      false,  Janitza::FLOAT, Janitza::P_NONE,     "CT_sec"        },  // index 2 has to be CT secondary
 
 
     { 19000,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN"          },
@@ -32,8 +32,8 @@ registerDefinition_t regDef_UMG96RM[] = {
     { 19044,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "CosPhi"        },
     { 19046,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "CosPhi"        },
     { 19048,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "CosPhi"        },
-    { 19050,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "F"             },
-    { 19052,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Rotation"      },
+    { 19050,    1,      false,  Janitza::FLOAT, Janitza::P_NONE,    "F"             },
+    { 19052,    1,      false,  Janitza::FLOAT, Janitza::P_NONE,    "Rotation"      },
     { 19054,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Wp"            },
     { 19056,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Wp"            },
     { 19058,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Wp"            },
@@ -69,7 +69,7 @@ registerDefinition_t regDef_UMG96RM[] = {
     { 19118,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "THD_I"         },
     { 19120,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "THD_I"         },
     
-    {  5896,    1,      false,  Janitza::INT,   Janitza::P_ALL,     "OperatingTime" },  // seconds
+    {  5896,    1,      false,  Janitza::INT,   Janitza::P_NONE,    "OperatingTime" },  // seconds
 
     // {  1000,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm1"    },   // TODO
 

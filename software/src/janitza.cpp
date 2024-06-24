@@ -66,7 +66,43 @@ bool Janitza::read() {
     return true;
 }
 
-void Janitza::generateInfluxCommands() {
+float Janitza::getValue(registerDefinition_t* regDef, uint16_t mbBufIdx) {
+    float mbValue;
+    switch (regDef->type) {
+        // case registerDataTypes::BYTE:
+        case registerDataTypes::SHORT:
+            mbValue = (int16_t)_mbBuf[mbBufIdx];
+            break;
+        case registerDataTypes::CHAR:
+            mbValue = (uint16_t)_mbBuf[mbBufIdx];
+            break;
+        case registerDataTypes::INT:
+            mbValue = _mbBuf[mbBufIdx] << 16 | (_mbBuf[mbBufIdx + 1] & 0xFFFF);
+            break;
+        case registerDataTypes::FLOAT:
+            memcpy(&mbValue, &_mbBuf[mbBufIdx + 1], 2);
+            memcpy(((uint8_t*)&mbValue) + 2, &_mbBuf[mbBufIdx], 2);
+            if (fabsf(mbValue) < FLOAT_CUTOFF) {
+                mbValue = 0;
+            }
+            break;
+        default:
+            _debugPrintf("Error: Current register type not implemented yet! addr = %d, type = %d\n", regDef->address,
+                         regDef->type);
+            return NAN;
+    }
+
+    float val = mbValue / (float)regDef->multiplier;
+
+    // apply current transformer ratio if needed (reading actual CT ratio currently not implemented, TODO)
+    if (regDef->applyCtRatio) {
+        val *= (float)_ctRatio;
+    }
+
+    return val;
+}
+
+bool Janitza::generateInfluxCommands() {
     int influxQueryLen = 0;
 
     for (int phase = 0; phase < P_TAG_NUM; phase++) {
@@ -85,107 +121,51 @@ void Janitza::generateInfluxCommands() {
             // }
 
             if (regDef->phaseTag == phase) {
-                float mbValue;
-                switch (regDef->type) {
-                    // case registerDataTypes::BYTE:
-                    case registerDataTypes::SHORT:
-                        mbValue = (int16_t)_mbBuf[mbBufIdx];
-                        break;
-                    case registerDataTypes::CHAR:
-                        mbValue = (uint16_t)_mbBuf[mbBufIdx];
-                        break;
-                    case registerDataTypes::INT:
-                        mbValue = _mbBuf[mbBufIdx] << 16 | (_mbBuf[mbBufIdx + 1] & 0xFFFF);
-                        break;
-                    case registerDataTypes::FLOAT:
-                        memcpy(&mbValue, &_mbBuf[mbBufIdx + 1], 2);
-                        memcpy(((uint8_t*)&mbValue) + 2, &_mbBuf[mbBufIdx], 2);
-                        if (fabsf(mbValue) < FLOAT_CUTOFF) {
-                            mbValue = 0;
-                        }
-                        break;
-                    default:
-                        _debugPrintf("Error: Current register type not implemented yet! addr = %d, type = %d\n",
-                                     regDef->address, regDef->type);
-                        break;
+
+                float val = getValue(regDef, mbBufIdx);
+                if (!isnanf(val)) {
+                    influxQueryLen += sprintf(_influxQueryBuf + influxQueryLen, "%s=%g,", regDef->influxStr, val);
                 }
-
-                float val = mbValue / (float)regDef->multiplier;
-
-                // apply current transformer ratio if needed
-                if (regDef->applyCtRatio) {
-                    val *= (float)_ctRatio;
-                }
-
-                influxQueryLen += sprintf(_influxQueryBuf + influxQueryLen, "%s=%g,", regDef->influxStr, val);
             }
             mbBufIdx += registerDataTypeSize[regDef->type] / 2; // increment modbus buffer index by type size
         }
 
         _influxQueryBuf[influxQueryLen - 1] = '\n'; // replace trailing comma with newline
     }
-    _debugPrintf("Sending InfluxDB Request...\n");
-    _debugPrintf("%s\n", _influxQueryBuf);
-    _influxSendRequest(_influxQueryBuf);
+    return true;
 }
 
 void Janitza::readAndSendToInflux() {
     bool success = read();
     if (success) {
-        generateInfluxCommands();
+        success = generateInfluxCommands();
+        if (success) {
+            _debugPrintf("Sending InfluxDB Request...\n");
+            _debugPrintf("%s\n", _influxQueryBuf);
+            _influxSendRequest(_influxQueryBuf);
+        }
     }
 }
 
 JsonDocument Janitza::generateJson() {
     JsonDocument doc;
-    JsonDocument doc2;
-    for (int i = REG_DEF_START; i < _regDefLen; i++) {
+    doc["SerialNumber"] = _serialNumber;
+
+    uint16_t mbBufIdx = 0;
+    for (size_t i = REG_DEF_START; i < _regDefLen; i++) {
         registerDefinition_t* regDef = &_regDef[i];
-        uint16_t mbBufIdx = 0;
 
-        // if (regDef->address == 0) { // skip "disabled" addresses
-        //     continue;
-        // }
+        float val = getValue(regDef, mbBufIdx);
 
-        float mbValue;
-        switch (regDef->type) {
-            // case registerDataTypes::BYTE:
-            case registerDataTypes::SHORT:
-                mbValue = (int16_t)_mbBuf[mbBufIdx];
-                break;
-            case registerDataTypes::CHAR:
-                mbValue = (uint16_t)_mbBuf[mbBufIdx];
-                break;
-            case registerDataTypes::INT:
-                mbValue = _mbBuf[mbBufIdx] << 16 | (_mbBuf[mbBufIdx + 1] & 0xFFFF);
-                break;
-            case registerDataTypes::FLOAT:
-                memcpy(&mbValue, &_mbBuf[mbBufIdx + 1], 2);
-                memcpy(((uint8_t*)&mbValue) + 2, &_mbBuf[mbBufIdx], 2);
-                if (fabsf(mbValue) < FLOAT_CUTOFF) {
-                    mbValue = 0;
-                }
-                break;
-            default:
-                _debugPrintf("Error: Current register type not implemented yet! addr = %d, type = %d\n",
-                             regDef->address, regDef->type);
-                break;
-        }
         mbBufIdx += registerDataTypeSize[regDef->type] / 2; // increment modbus buffer index by type size
 
-        float val = mbValue / (float)regDef->multiplier;
-
-        // apply current transformer ratio if needed
-        if (regDef->applyCtRatio) {
-            val *= (float)_ctRatio;
+        if (regDef->phaseTag != P_NONE) {
+            const char *phaseStr = phaseTagStr[regDef->phaseTag];
+            doc["values"][regDef->influxStr][phaseStr] = val;
         }
-
-        JsonObject nested = doc.createNestedObject(_regDef[i].influxSt3r);
-        for (size_t i = 0; i < count; i++) {
-            /* code */
+        else {
+            doc["values"][regDef->influxStr] = val;
         }
-
-        nested[(String)_regDef[i].phaseTag] = val;
     }
 
     return doc;

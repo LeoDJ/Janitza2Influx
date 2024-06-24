@@ -83,9 +83,11 @@ uint32_t lastUpdate = 0;
 void loop () {
     if (millis() - lastUpdate >= UPDATE_INTERVAL) {
         lastUpdate = millis();
-        janitza.readAndSendToInflux();
-        doc = janitza.generateJson();
-          serializeJson(doc, DBG);
+        // janitza.readAndSendToInflux();
+        if (janitza.read()) {
+            doc = janitza.generateJson();
+            serializeJson(doc, DBG);
+        }
     }
    
     handleHttpResponse();

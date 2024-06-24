@@ -50,7 +50,8 @@ class Janitza {
             P_L1L2,
             P_L2L3,
             P_L3L1,
-            P_TAG_NUM // length of enum
+            P_NONE,     // used when it's not phase-relevant
+            P_TAG_NUM   // length of enum
         };
 
         const char *phaseTagStr[P_TAG_NUM] = {
@@ -60,7 +61,8 @@ class Janitza {
             "L3",
             "L1-L2",
             "L2-L3",
-            "L3-L1"
+            "L3-L1",
+            "All",      // shouldn't be used
         };
 
 
@@ -73,17 +75,18 @@ class Janitza {
         uint32_t readSerialNumber();
         bool read();
         JsonDocument generateJson();
-        void generateInfluxCommands();
+        bool generateInfluxCommands();
         void readAndSendToInflux();
 
         // only public because of function pointer workaround
         void rs485Transmit();
         void rs485Receive();
 
-    private:
+    protected:
         bool modbusReadBulk(int16_t *destBuf, uint16_t startAddr, uint16_t count);
         uint16_t getRequiredModbusBufferSize(uint16_t regStart, uint16_t regEnd);
         uint16_t getContiguousRegisters(uint16_t startIndex);
+        float getValue(registerDefinition_t *regDef, uint16_t mbBufIdx);
 
         Stream *_debug = nullptr;       // Debug serial port
         Stream *_serial;                // Serial port pointer for Modbus
