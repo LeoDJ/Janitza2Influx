@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <ModbusMaster.h>
+#include <ArduinoJson.h>
 
 // workaround needed because of void pointer debacle
 // #include "globals.h"
@@ -71,6 +72,7 @@ class Janitza {
         void useRS485(uint32_t dePin, uint32_t rePin, void (*preTransmission)(), void (*postTransmission)());         // supply pin for RS485 transceiver direction (DE / RE)
         uint32_t readSerialNumber();
         bool read();
+        JsonDocument generateJson();
         void generateInfluxCommands();
         void readAndSendToInflux();
 

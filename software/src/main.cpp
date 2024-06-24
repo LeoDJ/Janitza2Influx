@@ -1,12 +1,14 @@
 #include <Arduino.h>
-
 #include "globals.h"
 #include "janitza.h"
 #include "janitzaRegDefs/UMG96RM.h"
 #include "eth.h"
+#include "ArduinoJson.h"
 
 Janitza janitza;
 EthernetClient client;
+
+JsonDocument doc;
 
 // workaround, because of function pointer weirdness
 void preTransmission() {
@@ -69,6 +71,7 @@ void setup() {
     janitza.setInfluxSendCallback(sendInfluxRequest, INFLUX_MEASUREMENT);
     janitza.init(MODUBS_SERIAL, MODBUS_ADDR, regDef_UMG96RM, sizeof(regDef_UMG96RM));  //blocks until modbus connected
 
+
     // janitza.read();
 
     initEthernet();
@@ -81,6 +84,8 @@ void loop () {
     if (millis() - lastUpdate >= UPDATE_INTERVAL) {
         lastUpdate = millis();
         janitza.readAndSendToInflux();
+        doc = janitza.generateJson();
+          serializeJson(doc, DBG);
     }
    
     handleHttpResponse();
