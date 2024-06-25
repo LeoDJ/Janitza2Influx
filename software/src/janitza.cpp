@@ -110,10 +110,10 @@ bool Janitza::generateInfluxCommands() {
         uint16_t mbBufIdx = 0;
 
         influxQueryLen += sprintf(_influxQueryBuf + influxQueryLen, "%s", _influxMeasurement); // measurement name
-        influxQueryLen += sprintf(_influxQueryBuf + influxQueryLen, ",serial=%d,phase=%s ", _serialNumber,
+        influxQueryLen += sprintf(_influxQueryBuf + influxQueryLen, ",serial=%lu,phase=%s ", _serialNumber,
                                   phaseStr); // print tags here
 
-        for (int i = REG_DEF_START; i < _regDefLen; i++) {
+        for (size_t i = REG_DEF_START; i < _regDefLen; i++) {
             registerDefinition_t* regDef = &_regDef[i];
 
             // if (regDef->address == 0) { // skip "disabled" addresses
@@ -124,7 +124,7 @@ bool Janitza::generateInfluxCommands() {
 
                 float val = getValue(regDef, mbBufIdx);
                 if (!isnanf(val)) {
-                    influxQueryLen += sprintf(_influxQueryBuf + influxQueryLen, "%s=%g,", regDef->influxStr, val);
+                    influxQueryLen += sprintf(_influxQueryBuf + influxQueryLen, "%s=%g,", regDef->nameStr, val);
                 }
             }
             mbBufIdx += registerDataTypeSize[regDef->type] / 2; // increment modbus buffer index by type size
@@ -161,10 +161,10 @@ JsonDocument Janitza::generateJson() {
 
         if (regDef->phaseTag != P_NONE) {
             const char *phaseStr = phaseTagStr[regDef->phaseTag];
-            doc["values"][regDef->influxStr][phaseStr] = val;
+            doc["values"][regDef->nameStr][phaseStr] = val;
         }
         else {
-            doc["values"][regDef->influxStr] = val;
+            doc["values"][regDef->nameStr] = val;
         }
     }
 
@@ -177,7 +177,7 @@ uint16_t Janitza::getContiguousRegisters(uint16_t startIndex) {
         return _regDefLen - 1;
     }
 
-    for (int i = startIndex; i < _regDefLen - 1; i++) { // loop until second to last element
+    for (size_t i = startIndex; i < _regDefLen - 1; i++) { // loop until second to last element
         registerDefinition_t def = _regDef[i];
         uint16_t nextAddr = def.address + (registerDataTypeSize[def.type] / 2);
         if (_regDef[i + 1].address != nextAddr) {
@@ -240,6 +240,10 @@ uint32_t Janitza::readSerialNumber() {
         return 0;
     }
     return _mb.getResponseBuffer(0) << 16 | _mb.getResponseBuffer(1);
+}
+
+uint32_t Janitza::getSerialNumber() {
+    return _serialNumber;
 }
 
 bool Janitza::modbusReadBulk(int16_t* destBuf, uint16_t startAddr, uint16_t count) {

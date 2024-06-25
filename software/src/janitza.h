@@ -14,7 +14,7 @@ typedef struct {
     uint8_t applyCtRatio : 1;
     uint8_t type : 3;
     uint8_t phaseTag : 3;
-    const char *influxStr;
+    const char *nameStr;
 } registerDefinition_t;
 
 
@@ -73,6 +73,7 @@ class Janitza {
         void setInfluxSendCallback(void (*influxSendRequest)(char *lineProtocolCommand), const char *measurementName);
         void useRS485(uint32_t dePin, uint32_t rePin, void (*preTransmission)(), void (*postTransmission)());         // supply pin for RS485 transceiver direction (DE / RE)
         uint32_t readSerialNumber();
+        uint32_t getSerialNumber();
         bool read();
         JsonDocument generateJson();
         bool generateInfluxCommands();

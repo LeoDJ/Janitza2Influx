@@ -3,6 +3,10 @@
 
 #include "secrets.h"    // don't forget to create secrets.h based on the .sample file
 
+
+#define USE_INFLUXDB    0
+#define USE_MQTT        1
+
 #define DBG             Serial1
 
 #define UPDATE_INTERVAL 5000    // ms

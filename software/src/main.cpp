@@ -4,6 +4,7 @@
 #include "janitzaRegDefs/UMG96RM.h"
 #include "eth.h"
 #include "ArduinoJson.h"
+#include "mqtt.h"
 
 Janitza janitza;
 EthernetClient client;
@@ -68,7 +69,9 @@ void setup() {
     MODUBS_SERIAL.begin(MODBUS_BAUD);
     janitza.setDebugSerial(DBG);
     janitza.useRS485(MODBUS_DE_PIN, MODBUS_RE_PIN, preTransmission, postTransmission);
+    #if USE_INFLUXDB
     janitza.setInfluxSendCallback(sendInfluxRequest, INFLUX_MEASUREMENT);
+    #endif
     janitza.init(MODUBS_SERIAL, MODBUS_ADDR, regDef_UMG96RM, sizeof(regDef_UMG96RM));  //blocks until modbus connected
 
 
@@ -76,6 +79,7 @@ void setup() {
 
     initEthernet();
     connectEthernet();
+    mqttInit();
 }
 
 uint32_t lastUpdate = 0;
@@ -83,12 +87,23 @@ uint32_t lastUpdate = 0;
 void loop () {
     if (millis() - lastUpdate >= UPDATE_INTERVAL) {
         lastUpdate = millis();
-        // janitza.readAndSendToInflux();
+
+        #if USE_INFLUXDB
+        janitza.readAndSendToInflux();
+        #endif
+
+        #if USE_MQTT
         if (janitza.read()) {
             doc = janitza.generateJson();
-            serializeJson(doc, DBG);
+            uint8_t buf[4096];
+            size_t len = serializeJson(doc, buf);
+            String topic = MQTT_BASE_TOPIC;
+            topic += String(janitza.getSerialNumber());
+            mqttPublish(topic.c_str(), buf, len);
         }
+        #endif
     }
    
     handleHttpResponse();
+    mqttLoop();
 }
