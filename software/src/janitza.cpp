@@ -161,10 +161,10 @@ JsonDocument Janitza::generateJson() {
 
         if (regDef->phaseTag != P_NONE) {
             const char *phaseStr = phaseTagStr[regDef->phaseTag];
-            doc["values"][regDef->nameStr][phaseStr] = val;
+            doc["Values"][regDef->nameStr][phaseStr] = val;
         }
         else {
-            doc["values"][regDef->nameStr] = val;
+            doc["Values"][regDef->nameStr] = val;
         }
     }
 

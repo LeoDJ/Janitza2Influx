@@ -67,6 +67,11 @@ void setup() {
     DBG.begin(115200);
     DBG.println("\nJanitza UMG96RM Power Analyzer to Influx\n");
     MODUBS_SERIAL.begin(MODBUS_BAUD);
+
+    initEthernet();
+    connectEthernet();
+    mqttInit();
+
     janitza.setDebugSerial(DBG);
     janitza.useRS485(MODBUS_DE_PIN, MODBUS_RE_PIN, preTransmission, postTransmission);
     #if USE_INFLUXDB
@@ -77,9 +82,6 @@ void setup() {
 
     // janitza.read();
 
-    initEthernet();
-    connectEthernet();
-    mqttInit();
 }
 
 uint32_t lastUpdate = 0;
@@ -99,6 +101,7 @@ void loop () {
             size_t len = serializeJson(doc, buf);
             String topic = MQTT_BASE_TOPIC;
             topic += String(janitza.getSerialNumber());
+            topic += "/json";
             mqttPublish(topic.c_str(), buf, len);
         }
         #endif
