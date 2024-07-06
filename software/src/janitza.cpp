@@ -161,10 +161,23 @@ JsonDocument Janitza::generateJson() {
 
         if (regDef->phaseTag != P_NONE) {
             const char *phaseStr = phaseTagStr[regDef->phaseTag];
-            doc["Values"][regDef->nameStr][phaseStr] = val;
+
+            if (regDef->index == -1) {
+                doc["Values"][regDef->nameStr][phaseStr] = val;
+            }
+            else {
+                JsonArray arr = doc["Values"][regDef->nameStr][phaseStr].to<JsonArray>();
+                arr.add(val); // only works when definitions are sorted
+            }
         }
         else {
-            doc["Values"][regDef->nameStr] = val;
+            if (regDef->index == -1) {
+                doc["Values"][regDef->nameStr] = val;
+            }
+            else {
+                JsonArray arr = doc["Values"][regDef->nameStr].to<JsonArray>();
+                arr.add(val); // only works when definitions are sorted
+            }
         }
     }
 

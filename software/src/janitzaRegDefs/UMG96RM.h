@@ -1,78 +1,445 @@
 #include "janitza.h"
 
 registerDefinition_t regDef_UMG96RM[] = {
-    // addr     multipl CTratio type            phase               name
-    { 754,      1,      false,  Janitza::INT,   Janitza::P_NONE,    "SN"            },  // index 0 has to be serial number
-    { 10,       1,      false,  Janitza::FLOAT, Janitza::P_NONE,    "CT_prim"       },  // index 1 has to be CT primary
-    { 12,       1,      false,  Janitza::FLOAT, Janitza::P_NONE,    "CT_sec"        },  // index 2 has to be CT secondary
+    // addr     multipl CTratio type            phase               name             arrayidx
+    { 754,      1,      false,  Janitza::INT,   Janitza::P_NONE,    "SN",            -1 },  // index 0 has to be serial number
+    { 10,       1,      false,  Janitza::FLOAT, Janitza::P_NONE,    "CT_prim",       -1 },  // index 1 has to be CT primary
+    { 12,       1,      false,  Janitza::FLOAT, Janitza::P_NONE,    "CT_sec",        -1 },  // index 2 has to be CT secondary
 
 
-    { 19000,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN"          },  // V
-    { 19002,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN"          },  // V
-    { 19004,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN"          },  // V
-    { 19006,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL"          },  // V
-    { 19008,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL"          },  // V
-    { 19010,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL"          },  // V
-    { 19012,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I"             },  // A
-    { 19014,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I"             },  // A
-    { 19016,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I"             },  // A
-    { 19018,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "I_N"           },  // A
-    { 19020,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "P"             },  // W
-    { 19022,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "P"             },  // W
-    { 19024,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "P"             },  // W
-    { 19026,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "P"             },  // W
-    { 19028,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Q"             },  // VA
-    { 19030,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Q"             },  // VA
-    { 19032,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Q"             },  // VA
-    { 19034,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Q"             },  // VA
-    { 19036,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "S"             },  // var
-    { 19038,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "S"             },  // var
-    { 19040,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "S"             },  // var
-    { 19042,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "S"             },  // var
-    { 19044,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "CosPhi"        },  // -
-    { 19046,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "CosPhi"        },  // -
-    { 19048,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "CosPhi"        },  // -
-    { 19050,    1,      false,  Janitza::FLOAT, Janitza::P_NONE,    "F"             },  // Hz
-    { 19052,    1,      false,  Janitza::FLOAT, Janitza::P_NONE,    "Rotation"      },  // -1: left, 0: none, 1: right
-    { 19054,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Wp"            },  // Wh
-    { 19056,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Wp"            },  // Wh
-    { 19058,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Wp"            },  // Wh
-    { 19060,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Wp"            },  // Wh
-    { 19062,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Wp_Consumed"   },  // Wh
-    { 19064,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Wp_Consumed"   },  // Wh
-    { 19066,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Wp_Consumed"   },  // Wh
-    { 19068,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Wp_Consumed"   },  // Wh
-    { 19070,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Wp_Delivered"  },  // Wh
-    { 19072,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Wp_Delivered"  },  // Wh
-    { 19074,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Wp_Delivered"  },  // Wh
-    { 19076,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Wp_Delivered"  },  // Wh
-    { 19078,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Wq"            },  // VAh
-    { 19080,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Wq"            },  // VAh
-    { 19082,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Wq"            },  // VAh
-    { 19084,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Wq"            },  // VAh
-    { 19086,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Ws"            },  // varh
-    { 19088,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Ws"            },  // varh
-    { 19090,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Ws"            },  // varh
-    { 19092,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Ws"            },  // varh
-    { 19094,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Ws_ind"        },  // varh
-    { 19096,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Ws_ind"        },  // varh
-    { 19098,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Ws_ind"        },  // varh
-    { 19100,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Ws_ind"        },  // varh
-    { 19102,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Ws_cap"        },  // varh
-    { 19104,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Ws_cap"        },  // varh
-    { 19106,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Ws_cap"        },  // varh
-    { 19108,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Ws_cap"        },  // varh
-    { 19110,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "THD_U"         },  // %
-    { 19112,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "THD_U"         },  // %
-    { 19114,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "THD_U"         },  // %
-    { 19116,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "THD_I"         },  // %
-    { 19118,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "THD_I"         },  // %
-    { 19120,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "THD_I"         },  // %
-    
-    {  5896,    1,      false,  Janitza::INT,   Janitza::P_NONE,    "OperatingTime" },  // seconds
+    { 19000,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN",          -1 },  // V
+    { 19002,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN",          -1 },  // V
+    { 19004,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN",          -1 },  // V
+    { 19006,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL",          -1 },  // V
+    { 19008,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL",          -1 },  // V
+    { 19010,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL",          -1 },  // V
+    { 19012,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I",             -1 },  // A
+    { 19014,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I",             -1 },  // A
+    { 19016,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I",             -1 },  // A
+    { 19018,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "I_N",           -1 },  // A
+    { 19020,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "P",             -1 },  // W
+    { 19022,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "P",             -1 },  // W
+    { 19024,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "P",             -1 },  // W
+    { 19026,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "P",             -1 },  // W
+    { 19028,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Q",             -1 },  // VA
+    { 19030,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Q",             -1 },  // VA
+    { 19032,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Q",             -1 },  // VA
+    { 19034,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Q",             -1 },  // VA
+    { 19036,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "S",             -1 },  // var
+    { 19038,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "S",             -1 },  // var
+    { 19040,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "S",             -1 },  // var
+    { 19042,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "S",             -1 },  // var
+    { 19044,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "CosPhi",        -1 },  // -
+    { 19046,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "CosPhi",        -1 },  // -
+    { 19048,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "CosPhi",        -1 },  // -
+    { 19050,    1,      false,  Janitza::FLOAT, Janitza::P_NONE,    "F",             -1 },  // Hz
+    { 19052,    1,      false,  Janitza::FLOAT, Janitza::P_NONE,    "Rotation",      -1 },  // -1: left, 0: none, 1: right
+    { 19054,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Wp",            -1 },  // Wh
+    { 19056,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Wp",            -1 },  // Wh
+    { 19058,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Wp",            -1 },  // Wh
+    { 19060,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Wp",            -1 },  // Wh
+    { 19062,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Wp_Consumed",   -1 },  // Wh
+    { 19064,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Wp_Consumed",   -1 },  // Wh
+    { 19066,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Wp_Consumed",   -1 },  // Wh
+    { 19068,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Wp_Consumed",   -1 },  // Wh
+    { 19070,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Wp_Delivered",  -1 },  // Wh
+    { 19072,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Wp_Delivered",  -1 },  // Wh
+    { 19074,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Wp_Delivered",  -1 },  // Wh
+    { 19076,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Wp_Delivered",  -1 },  // Wh
+    { 19078,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Wq",            -1 },  // VAh
+    { 19080,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Wq",            -1 },  // VAh
+    { 19082,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Wq",            -1 },  // VAh
+    { 19084,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Wq",            -1 },  // VAh
+    { 19086,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Ws",            -1 },  // varh
+    { 19088,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Ws",            -1 },  // varh
+    { 19090,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Ws",            -1 },  // varh
+    { 19092,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Ws",            -1 },  // varh
+    { 19094,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Ws_ind",        -1 },  // varh
+    { 19096,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Ws_ind",        -1 },  // varh
+    { 19098,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Ws_ind",        -1 },  // varh
+    { 19100,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Ws_ind",        -1 },  // varh
+    { 19102,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "Ws_cap",        -1 },  // varh
+    { 19104,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "Ws_cap",        -1 },  // varh
+    { 19106,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "Ws_cap",        -1 },  // varh
+    { 19108,    1,      false,  Janitza::FLOAT, Janitza::P_ALL,     "Ws_cap",        -1 },  // varh
+    { 19110,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "THD_U",         -1 },  // %
+    { 19112,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "THD_U",         -1 },  // %
+    { 19114,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "THD_U",         -1 },  // %
+    { 19116,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "THD_I",         -1 },  // %
+    { 19118,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "THD_I",         -1 },  // %
+    { 19120,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "THD_I",         -1 },  // %
 
-    // {  1000,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm1"    },   // TODO
+    {  5896,    1,      false,  Janitza::INT,   Janitza::P_NONE,    "OperatingTime", -1 },  // seconds
 
 
+    {  1000,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",      0 },  // V
+    {  1002,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",      1 },  // V
+    {  1004,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",      2 },  // V
+    {  1006,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",      3 },  // V
+    {  1008,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",      4 },  // V
+    {  1010,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",      5 },  // V
+    {  1012,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",      6 },  // V
+    {  1014,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",      7 },  // V
+    {  1016,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",      8 },  // V
+    {  1018,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",      9 },  // V
+    {  1020,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     10 },  // V
+    {  1022,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     11 },  // V
+    {  1024,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     12 },  // V
+    {  1026,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     13 },  // V
+    {  1028,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     14 },  // V
+    {  1030,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     15 },  // V
+    {  1032,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     16 },  // V
+    {  1034,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     17 },  // V
+    {  1036,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     18 },  // V
+    {  1038,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     19 },  // V
+    {  1040,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     20 },  // V
+    {  1042,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     21 },  // V
+    {  1044,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     22 },  // V
+    {  1046,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     23 },  // V
+    {  1048,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     24 },  // V
+    {  1050,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     25 },  // V
+    {  1052,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     26 },  // V
+    {  1054,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     27 },  // V
+    {  1056,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     28 },  // V
+    {  1058,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     29 },  // V
+    {  1060,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     30 },  // V
+    {  1062,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     31 },  // V
+    {  1064,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     32 },  // V
+    {  1066,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     33 },  // V
+    {  1068,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     34 },  // V
+    {  1070,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     35 },  // V
+    {  1072,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     36 },  // V
+    {  1074,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     37 },  // V
+    {  1076,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     38 },  // V
+    {  1078,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "U_LN_Harm",     39 },  // V
 
+    {  1080,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",      0 },  // V
+    {  1082,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",      1 },  // V
+    {  1084,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",      2 },  // V
+    {  1086,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",      3 },  // V
+    {  1088,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",      4 },  // V
+    {  1090,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",      5 },  // V
+    {  1092,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",      6 },  // V
+    {  1094,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",      7 },  // V
+    {  1096,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",      8 },  // V
+    {  1098,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",      9 },  // V
+    {  1100,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     10 },  // V
+    {  1102,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     11 },  // V
+    {  1104,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     12 },  // V
+    {  1106,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     13 },  // V
+    {  1108,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     14 },  // V
+    {  1110,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     15 },  // V
+    {  1112,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     16 },  // V
+    {  1114,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     17 },  // V
+    {  1116,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     18 },  // V
+    {  1118,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     19 },  // V
+    {  1120,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     20 },  // V
+    {  1122,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     21 },  // V
+    {  1124,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     22 },  // V
+    {  1126,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     23 },  // V
+    {  1128,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     24 },  // V
+    {  1130,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     25 },  // V
+    {  1132,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     26 },  // V
+    {  1134,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     27 },  // V
+    {  1136,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     28 },  // V
+    {  1138,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     29 },  // V
+    {  1140,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     30 },  // V
+    {  1142,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     31 },  // V
+    {  1144,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     32 },  // V
+    {  1146,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     33 },  // V
+    {  1148,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     34 },  // V
+    {  1150,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     35 },  // V
+    {  1152,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     36 },  // V
+    {  1154,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     37 },  // V
+    {  1156,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     38 },  // V
+    {  1158,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "U_LN_Harm",     39 },  // V
+
+    {  1160,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",      0 },  // V
+    {  1162,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",      1 },  // V
+    {  1164,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",      2 },  // V
+    {  1166,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",      3 },  // V
+    {  1168,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",      4 },  // V
+    {  1170,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",      5 },  // V
+    {  1172,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",      6 },  // V
+    {  1174,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",      7 },  // V
+    {  1176,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",      8 },  // V
+    {  1178,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",      9 },  // V
+    {  1180,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     10 },  // V
+    {  1182,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     11 },  // V
+    {  1184,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     12 },  // V
+    {  1186,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     13 },  // V
+    {  1188,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     14 },  // V
+    {  1190,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     15 },  // V
+    {  1192,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     16 },  // V
+    {  1194,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     17 },  // V
+    {  1196,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     18 },  // V
+    {  1198,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     19 },  // V
+    {  1200,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     20 },  // V
+    {  1202,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     21 },  // V
+    {  1204,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     22 },  // V
+    {  1206,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     23 },  // V
+    {  1208,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     24 },  // V
+    {  1210,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     25 },  // V
+    {  1212,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     26 },  // V
+    {  1214,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     27 },  // V
+    {  1216,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     28 },  // V
+    {  1218,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     29 },  // V
+    {  1220,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     30 },  // V
+    {  1222,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     31 },  // V
+    {  1224,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     32 },  // V
+    {  1226,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     33 },  // V
+    {  1228,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     34 },  // V
+    {  1230,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     35 },  // V
+    {  1232,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     36 },  // V
+    {  1234,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     37 },  // V
+    {  1236,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     38 },  // V
+    {  1238,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "U_LN_Harm",     39 },  // V
+
+
+    {  1240,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",      0 },  // V
+    {  1242,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",      1 },  // V
+    {  1244,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",      2 },  // V
+    {  1246,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",      3 },  // V
+    {  1248,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",      4 },  // V
+    {  1250,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",      5 },  // V
+    {  1252,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",      6 },  // V
+    {  1254,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",      7 },  // V
+    {  1256,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",      8 },  // V
+    {  1258,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",      9 },  // V
+    {  1260,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     10 },  // V
+    {  1262,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     11 },  // V
+    {  1264,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     12 },  // V
+    {  1266,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     13 },  // V
+    {  1268,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     14 },  // V
+    {  1270,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     15 },  // V
+    {  1272,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     16 },  // V
+    {  1274,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     17 },  // V
+    {  1276,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     18 },  // V
+    {  1278,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     19 },  // V
+    {  1280,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     20 },  // V
+    {  1282,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     21 },  // V
+    {  1284,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     22 },  // V
+    {  1286,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     23 },  // V
+    {  1288,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     24 },  // V
+    {  1290,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     25 },  // V
+    {  1292,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     26 },  // V
+    {  1294,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     27 },  // V
+    {  1296,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     28 },  // V
+    {  1298,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     29 },  // V
+    {  1300,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     30 },  // V
+    {  1302,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     31 },  // V
+    {  1304,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     32 },  // V
+    {  1306,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     33 },  // V
+    {  1308,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     34 },  // V
+    {  1310,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     35 },  // V
+    {  1312,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     36 },  // V
+    {  1314,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     37 },  // V
+    {  1316,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     38 },  // V
+    {  1318,    1,      false,  Janitza::FLOAT, Janitza::P_L1L2,    "U_LL_Harm",     39 },  // V
+
+    {  1320,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",      0 },  // V
+    {  1322,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",      1 },  // V
+    {  1324,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",      2 },  // V
+    {  1326,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",      3 },  // V
+    {  1328,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",      4 },  // V
+    {  1330,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",      5 },  // V
+    {  1332,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",      6 },  // V
+    {  1334,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",      7 },  // V
+    {  1336,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",      8 },  // V
+    {  1338,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",      9 },  // V
+    {  1340,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     10 },  // V
+    {  1342,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     11 },  // V
+    {  1344,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     12 },  // V
+    {  1346,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     13 },  // V
+    {  1348,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     14 },  // V
+    {  1350,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     15 },  // V
+    {  1352,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     16 },  // V
+    {  1354,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     17 },  // V
+    {  1356,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     18 },  // V
+    {  1358,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     19 },  // V
+    {  1360,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     20 },  // V
+    {  1362,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     21 },  // V
+    {  1364,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     22 },  // V
+    {  1366,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     23 },  // V
+    {  1368,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     24 },  // V
+    {  1370,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     25 },  // V
+    {  1372,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     26 },  // V
+    {  1374,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     27 },  // V
+    {  1376,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     28 },  // V
+    {  1378,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     29 },  // V
+    {  1380,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     30 },  // V
+    {  1382,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     31 },  // V
+    {  1384,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     32 },  // V
+    {  1386,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     33 },  // V
+    {  1388,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     34 },  // V
+    {  1390,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     35 },  // V
+    {  1392,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     36 },  // V
+    {  1394,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     37 },  // V
+    {  1396,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     38 },  // V
+    {  1398,    1,      false,  Janitza::FLOAT, Janitza::P_L2L3,    "U_LL_Harm",     39 },  // V
+
+    {  1400,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",      0 },  // V
+    {  1402,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",      1 },  // V
+    {  1404,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",      2 },  // V
+    {  1406,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",      3 },  // V
+    {  1408,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",      4 },  // V
+    {  1410,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",      5 },  // V
+    {  1412,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",      6 },  // V
+    {  1414,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",      7 },  // V
+    {  1416,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",      8 },  // V
+    {  1418,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",      9 },  // V
+    {  1420,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     10 },  // V
+    {  1422,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     11 },  // V
+    {  1424,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     12 },  // V
+    {  1426,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     13 },  // V
+    {  1428,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     14 },  // V
+    {  1430,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     15 },  // V
+    {  1432,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     16 },  // V
+    {  1434,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     17 },  // V
+    {  1436,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     18 },  // V
+    {  1438,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     19 },  // V
+    {  1440,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     20 },  // V
+    {  1442,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     21 },  // V
+    {  1444,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     22 },  // V
+    {  1446,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     23 },  // V
+    {  1448,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     24 },  // V
+    {  1450,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     25 },  // V
+    {  1452,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     26 },  // V
+    {  1454,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     27 },  // V
+    {  1456,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     28 },  // V
+    {  1458,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     29 },  // V
+    {  1460,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     30 },  // V
+    {  1462,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     31 },  // V
+    {  1464,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     32 },  // V
+    {  1466,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     33 },  // V
+    {  1468,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     34 },  // V
+    {  1470,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     35 },  // V
+    {  1472,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     36 },  // V
+    {  1474,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     37 },  // V
+    {  1476,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     38 },  // V
+    {  1478,    1,      false,  Janitza::FLOAT, Janitza::P_L3L1,    "U_LL_Harm",     39 },  // V
+
+
+    {  1480,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",         0 },  // A
+    {  1482,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",         1 },  // A
+    {  1484,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",         2 },  // A
+    {  1486,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",         3 },  // A
+    {  1488,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",         4 },  // A
+    {  1490,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",         5 },  // A
+    {  1492,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",         6 },  // A
+    {  1494,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",         7 },  // A
+    {  1496,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",         8 },  // A
+    {  1498,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",         9 },  // A
+    {  1500,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        10 },  // A
+    {  1502,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        11 },  // A
+    {  1504,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        12 },  // A
+    {  1506,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        13 },  // A
+    {  1508,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        14 },  // A
+    {  1510,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        15 },  // A
+    {  1512,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        16 },  // A
+    {  1514,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        17 },  // A
+    {  1516,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        18 },  // A
+    {  1518,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        19 },  // A
+    {  1520,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        20 },  // A
+    {  1522,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        21 },  // A
+    {  1524,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        22 },  // A
+    {  1526,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        23 },  // A
+    {  1528,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        24 },  // A
+    {  1530,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        25 },  // A
+    {  1532,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        26 },  // A
+    {  1534,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        27 },  // A
+    {  1536,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        28 },  // A
+    {  1538,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        29 },  // A
+    {  1540,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        30 },  // A
+    {  1542,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        31 },  // A
+    {  1544,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        32 },  // A
+    {  1546,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        33 },  // A
+    {  1548,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        34 },  // A
+    {  1550,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        35 },  // A
+    {  1552,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        36 },  // A
+    {  1554,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        37 },  // A
+    {  1556,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        38 },  // A
+    {  1558,    1,      false,  Janitza::FLOAT, Janitza::P_L1,      "I_Harm",        39 },  // A
+
+    {  1560,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",         0 },  // A
+    {  1562,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",         1 },  // A
+    {  1564,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",         2 },  // A
+    {  1566,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",         3 },  // A
+    {  1568,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",         4 },  // A
+    {  1570,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",         5 },  // A
+    {  1572,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",         6 },  // A
+    {  1574,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",         7 },  // A
+    {  1576,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",         8 },  // A
+    {  1578,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",         9 },  // A
+    {  1580,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        10 },  // A
+    {  1582,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        11 },  // A
+    {  1584,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        12 },  // A
+    {  1586,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        13 },  // A
+    {  1588,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        14 },  // A
+    {  1590,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        15 },  // A
+    {  1592,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        16 },  // A
+    {  1594,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        17 },  // A
+    {  1596,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        18 },  // A
+    {  1598,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        19 },  // A
+    {  1600,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        20 },  // A
+    {  1602,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        21 },  // A
+    {  1604,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        22 },  // A
+    {  1606,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        23 },  // A
+    {  1608,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        24 },  // A
+    {  1610,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        25 },  // A
+    {  1612,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        26 },  // A
+    {  1614,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        27 },  // A
+    {  1616,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        28 },  // A
+    {  1618,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        29 },  // A
+    {  1620,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        30 },  // A
+    {  1622,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        31 },  // A
+    {  1624,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        32 },  // A
+    {  1626,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        33 },  // A
+    {  1628,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        34 },  // A
+    {  1630,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        35 },  // A
+    {  1632,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        36 },  // A
+    {  1634,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        37 },  // A
+    {  1636,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        38 },  // A
+    {  1638,    1,      false,  Janitza::FLOAT, Janitza::P_L2,      "I_Harm",        39 },  // A
+
+    {  1640,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",         0 },  // A
+    {  1642,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",         1 },  // A
+    {  1644,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",         2 },  // A
+    {  1646,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",         3 },  // A
+    {  1648,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",         4 },  // A
+    {  1650,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",         5 },  // A
+    {  1652,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",         6 },  // A
+    {  1654,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",         7 },  // A
+    {  1656,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",         8 },  // A
+    {  1658,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",         9 },  // A
+    {  1660,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        10 },  // A
+    {  1662,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        11 },  // A
+    {  1664,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        12 },  // A
+    {  1666,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        13 },  // A
+    {  1668,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        14 },  // A
+    {  1670,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        15 },  // A
+    {  1672,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        16 },  // A
+    {  1674,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        17 },  // A
+    {  1676,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        18 },  // A
+    {  1678,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        19 },  // A
+    {  1680,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        20 },  // A
+    {  1682,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        21 },  // A
+    {  1684,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        22 },  // A
+    {  1686,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        23 },  // A
+    {  1688,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        24 },  // A
+    {  1690,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        25 },  // A
+    {  1692,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        26 },  // A
+    {  1694,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        27 },  // A
+    {  1696,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        28 },  // A
+    {  1698,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        29 },  // A
+    {  1700,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        30 },  // A
+    {  1702,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        31 },  // A
+    {  1704,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        32 },  // A
+    {  1706,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        33 },  // A
+    {  1708,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        34 },  // A
+    {  1710,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        35 },  // A
+    {  1712,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        36 },  // A
+    {  1714,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        37 },  // A
+    {  1716,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        38 },  // A
+    {  1718,    1,      false,  Janitza::FLOAT, Janitza::P_L3,      "I_Harm",        39 },  // A
 };

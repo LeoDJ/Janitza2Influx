@@ -15,6 +15,7 @@ typedef struct {
     uint8_t type : 3;
     uint8_t phaseTag : 3;
     const char *nameStr;
+    int8_t index;
 } registerDefinition_t;
 
 
